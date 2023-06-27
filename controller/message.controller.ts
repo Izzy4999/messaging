@@ -10,7 +10,7 @@ const onGetMessage = async (req: IHaveRoom, res: Response) => {
     roomCode: { $regex: req.roomId, $options: "i" },
   });
   if (!message)
-    return res.status(401).json({
+    return res.status(404).json({
       status: "failed",
       message: "no message",
     });
@@ -43,6 +43,7 @@ const onUpdateMessage = async (req: IHaveRoom, res: Response) => {
           from: req.body.from,
           time: req.body.time,
           date: req.body.date,
+          isRead: req.body.isRead
         },
       },
     }
@@ -52,6 +53,8 @@ const onUpdateMessage = async (req: IHaveRoom, res: Response) => {
     data: message,
   });
 };
+
+
 // const getAllUserRoomMessages = async (req:IHaveUser, res:Response)=>{
 //     const message = await Message.find({Room_id:{$regex:req.user.id, $options:"i"}})
 //     return res.status(200).json({

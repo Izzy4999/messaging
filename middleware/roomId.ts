@@ -15,6 +15,6 @@ export default  function (req:IHaveRoom,res:Response,next:NextFunction){
         req.roomId = id
         next()
     }catch(err){
-        console.log(err)
+        return res.status(403).json({error: "Failed"})
     }
 }

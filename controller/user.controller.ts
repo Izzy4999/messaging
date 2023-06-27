@@ -13,6 +13,7 @@ interface IHaveUser extends Request {
 }
 
 const onSignUp = async (req: Request, res: Response) => {
+
   const { error } = validate(req.body as UserSign);
   if (error)
     return res.status(400).json({
@@ -61,7 +62,7 @@ const onSignUp = async (req: Request, res: Response) => {
   });
 };
 
-const onLogin = async (req: Request, res: Response) => {
+const onLogin = async (req: Request, res: Response) => {  
   const { userName, password } = req.body as LogUser;
 
   const { error } = validateLogin(req.body);
@@ -81,14 +82,6 @@ const onLogin = async (req: Request, res: Response) => {
       });
   }
 
-  // userName
-  //   ? (userExist = await User.findOne({ email:userName }))
-  //   : userName
-  //   ? (userExist = await User.findOne({ userName }))
-  //   : res.json({
-  //       status: `Failed`,
-  //       message: `User does not exist`,
-  //     });
 
   const rightPassword = await bcrypt.compare(password, userExist.password); // Object is possibly 'null' (for userExist.password);
   if (!rightPassword)
@@ -132,9 +125,9 @@ const onGetUser = async (req: IHaveUser, res: Response) => {
     user,
   });
 };
-const onGetAllUser = async (req: Request, res: Response) => {
-  const user = await User.find();
-  res.json({
+const onGetAllUser = async (req: IHaveUser, res: Response) => {
+  const user = await User.find({$nor:[{$and:[{'email':req.user.email}]}]}).select("-__v -password");
+  res.status(200).json({
     status: "Success",
     users: user,
   });

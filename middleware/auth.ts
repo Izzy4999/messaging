@@ -9,10 +9,10 @@ interface IHaveUser extends Request {
   user?: any;
 }
 export default function (req: IHaveUser, res: Response, next: NextFunction) {
-  const token: any = req.header("x-auth-token");
+  const token: any = req.header("user-token");
 
   if (!token)
-    return res.json({
+    return res.status(403).json({
       status: `Failed`,
       message: `Not allowed`,
     });
@@ -21,8 +21,7 @@ export default function (req: IHaveUser, res: Response, next: NextFunction) {
     req.user = decoded;
     next();
   } catch (err) {
-    console.log(err);
-    res.json({
+    res.status(403).json({
       status: `Failed`,
       message: `Invalid token`,
     });
